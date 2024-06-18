@@ -31,17 +31,3 @@ tasks.named('test') {
 	useJUnitPlatform()
 	jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
 }
-
-tasks.withType(JavaCompile) {
-	options.compilerArgs << "-Xlint:unchecked"
-}
-
-task makeExecutable(type: Exec) {
-	commandLine 'chmod', '+x', 'gradlew'
-}
-
-gradle.taskGraph.whenReady { graph ->
-	if (graph.hasTask(makeExecutable)) {
-		makeExecutable.execute()
-	}
-}
