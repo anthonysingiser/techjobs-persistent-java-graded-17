@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.launchcode.techjobs.persistent.models.Skill;
 
 
 import java.util.List;
@@ -45,10 +46,12 @@ public class HomeController {
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                       Errors errors, Model model, @RequestParam int employerId) {
+                                    Errors errors, Model model,
+                                    @RequestParam int employerId,
+                                    @RequestParam List<Integer> skills) {
 
         if (errors.hasErrors()) {
-	        model.addAttribute("title", "Add Job");
+            model.addAttribute("title", "Add Job");
             return "add";
         }
 
@@ -61,9 +64,11 @@ public class HomeController {
         Employer selectedEmployer = result.get();
         newJob.setEmployer(selectedEmployer);
 
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+        newJob.setSkills(skillObjs);
+
         return "redirect:";
     }
-
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
 
